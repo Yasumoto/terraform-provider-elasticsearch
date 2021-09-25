@@ -28,6 +28,7 @@ jobs:
         es-major-version:
           - "6"
           - "7"
+          - "7-opensearch"
         include:
         - es-major-version: "6"
           es-version: 6.8.9
@@ -37,6 +38,10 @@ jobs:
           es-version: 7.10.1
           ES_OPENDISTRO_IMAGE: "amazon/opendistro-for-elasticsearch:1.13.2"
           ES_KIBANA_IMAGE: "docker.elastic.co/kibana/kibana:7.10.1"
+        - es-major-version: "7-opensearch"
+          es-version: 7.10.2
+          ES_OPENDISTRO_IMAGE: "opensearchproject/opensearch:1.0.0"
+          ES_KIBANA_IMAGE: "docker.elastic.co/kibana/kibana-oss:7.10.2"
     needs: [lint]
     name: Test against ES ${{ matrix.es-major-version }} on ${{ matrix.go-version }}/${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -100,13 +105,15 @@ jobs:
         if [ -n "$ES_KIBANA_IMAGE" ]; then
           ./script/wait-for-endpoint --timeout=120 http://localhost:5601/api/saved_objects/_find?type=visualization
         fi
-    - name: Warm up OpenDistro
-      # OpenDistro lazily initializes its indexes, see
-      # https://github.com/opendistro-for-elasticsearch/alerting/issues/60
+    - name: Warm up OpenDistro/Opensearch
+      # - OpenDistro lazily initializes its indexes, see
+      #   https://github.com/opendistro-for-elasticsearch/alerting/issues/60
+      # - OpenSearch 1.x uses a compatibility mode to maintain ESv7.x version
       run: |
         if [ -n "$ES_OPENDISTRO_IMAGE" ]; then
           ./script/wait-for-endpoint http://admin:admin@localhost:9220
-          curl -s -v -X POST -H 'Content-type: application/json'  -d '{"name":"_warmup","type":"slack","slack":{"url": "http://www.example.com"}}' http://admin:admin@localhost:9220/_opendistro/_alerting/destinations
+          curl -s -v -X POST -H 'Content-type: application/json' -d '{"name":"_warmup","type":"slack","slack":{"url": "http://www.example.com"}}' http://admin:admin@localhost:9220/_opendistro/_alerting/destinations
+          curl -s -v -X POST -H 'Content-type: application/json' -d '{"compatibility": {"override_main_response_version" : true}}' http://admin:admin@localhost:9220/_cluster/settings
         fi
     - name: Dump docker logs on failure
       if: failure()

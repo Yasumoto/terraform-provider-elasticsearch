@@ -42,7 +42,7 @@ provider "elasticsearch" {
 
 ### API Coverage
 
-Examples of resources can be found in the examples directory. The resources currently supported from the: opensource Elasticsearch, XPack and OpenDistro distributions are described below.
+Examples of resources can be found in the examples directory. The resources currently supported from the: opensource Elasticsearch, XPack and OpenDistro/OpenSearch distributions are described below.
 
 #### Elasticsearch
 
@@ -71,7 +71,7 @@ Examples of resources can be found in the examples directory. The resources curr
 - [x] [Snapshot lifecycle policy](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-lifecycle-management-api.html)
 - [x] [Watch](https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api.html)
 
-#### OpenDistro
+#### OpenDistro/OpenSearch
 
 - [x] [Alerting](https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/api/) (Destinations/Monitors)
 - [x] [Security](https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/api/) (Role/Role Mapping/User)

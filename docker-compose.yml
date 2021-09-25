@@ -53,7 +53,7 @@ services:
         hard: -1
     ports:
       - 9210:9210
-  opendistro:
+  opendistro: # or opensearch
     image: ${ES_OPENDISTRO_IMAGE:-rwgrim/docker-noop}
     hostname: elasticsearch-opendistro
     container_name: elasticsearch-opendistro
